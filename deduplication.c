@@ -1,6 +1,7 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <dirent.h>
 struct wavfile_header
 {
     char riff_tag[4];
@@ -126,15 +127,148 @@ int compare_files(const char *fname1, const char *fname2)
    }
 }
 
+
+
+int check_wav(const char *file_name)
+{
+    int i = 0,len;
+    len = strlen(file_name);
+    i=(len-4);
+    if(file_name[i]!='.')
+        return 0;
+    else if(file_name[i+1]!='w')
+        return 0;
+    else if(file_name[i+2]!='a')
+        return 0;
+    else if(file_name[i+3]!='v')
+        return 0;
+    return 1;
+}
+int check_txt(const char *file_name)
+{
+    int i = 0,len;
+    len = strlen(file_name);
+    i=(len-4);
+    if(file_name[i]!='.')
+        return 0;
+    else if(file_name[i+1]!='t')
+        return 0;
+    else if(file_name[i+2]!='x')
+        return 0;
+    else if(file_name[i+3]!='t')
+        return 0;
+    return 1;
+}
+
+void list_dir (FILE *fp,const char *path)
+{
+    struct dirent *entry;
+    DIR *dir;
+    dir = opendir (path);
+
+    while ((entry = readdir (dir)) != NULL) {
+        if(check_wav(entry->d_name))
+            fprintf(fp,"\n%s",entry->d_name);
+    }
+}
+
+int noof_files (const char *path)
+{
+    struct dirent *entry;
+    int ret = 0;
+    DIR *dir;
+    dir = opendir (path);
+
+    while ((entry = readdir (dir)) != NULL) {
+        if(check_wav(entry->d_name))
+            ret ++;
+    }
+    return ret;
+}
+
+
+
+
+
+void deleteFile(char *path) {
+    int status;
+    char filetodelete[25];
+    char temp[100];
+
+ //   printf("\n \t **Delete File**\n");
+
+//    displayDIR(path);
+
+    printf("\n\tChoose the name of the file to delete:\t");
+    scanf("%s", filetodelete);
+
+    //char fullpath[40];// = "C:/cygwin/tmp/";
+    strcat(path,filetodelete);
+    //printf("%s\n", path);
+    status = remove(path);
+
+
+//    status = remove(filetodelete);
+    if( status == 0 )
+        printf("%s file deleted successfully.\n",  filetodelete);
+    else {
+//        printf("\n\tUnable to delete the file");
+        perror("\n\tError");
+    }
+}
+
+void del_txt(char *path)
+{
+    char path_2[100];
+    struct dirent *entry;
+    DIR *dir;
+    dir = opendir (path);
+
+    int status;
+    char filetodelete[25];
+    char temp[100];
+
+    while ((entry = readdir (dir)) != NULL) {
+        strcpy(path_2,path);
+        if(check_txt(entry->d_name))
+        {    
+            strcpy(filetodelete,entry->d_name);
+            strcat(path_2,filetodelete);
+            status = remove(path_2);
+//            printf("\n%s deleted.",entry->d_name);
+            if( status == 0 );
+//                printf("%s file deleted successfully.\n",  filetodelete);
+            else {
+                perror("\n\tError");
+            }
+        }
+    }
+
+}
+
+//deduplication.c and wav files should be in the same folder
 int main()
 {
+    char z;
+    char path[100];
+    char path_temp[100];
+    printf("Enter path of folder:\n");
+    scanf("%s",path);
+//    strcpy(path,"/home/yashasvi/git/Audio-Sample-Generator/Test/");
+    strcpy(path_temp,path);
+    FILE *f=fopen("input1.txt","w+");
+    int a=noof_files(path);
+    fprintf(f,"%d",a);
+    list_dir(f,path);    
+    fclose(f);
+
     int i,j,x,min;
     int num_tracks;
     //double percentage_matching;
     //printf("Enter number of tracks:\n");
     //scanf("%d", &num_tracks);
 
-    FILE *fp = fopen("input.txt","r+");
+    FILE *fp = fopen("input1.txt","r+");
     fscanf(fp,"%d", &num_tracks);
     //int total_results[num_tracks];
     //printf("num_tracks = %d\n",num_tracks);
@@ -170,10 +304,19 @@ int main()
 		min = total_results[j];*/
 
             x = compare_files(track_txt[i],track_txt[j]);
-   	    if(x)
-		printf("Files %d and %d are matching\n",i+1,j+1);
+   	        if(x)
+            {
+	       	    printf("Files %s and %s are matching\n",track_names[i],track_names[j]);
+/*                printf("Do you want to delete a file[y/n]?\n");
+                scanf("%s",z);
+                if(!strcmp(z,"y"))
+*/              deleteFile(path);
+            }
+                
         }
     }
+    del_txt(path_temp);
+
     return 0;
 }
 
