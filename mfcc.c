@@ -265,14 +265,6 @@ void dft(short int *x[],int num_frames)
 
 
 
-/*
- * libmfcc.h - Header for libMFCC
- * Copyright (c) 2010 Jeremy Sawruk
- *
- * This code is released under the MIT License. 
- * For conditions of distribution and use, see the license in LICENSE
- */
-
 #pragma once
 
 #define PI 3.14159265358979323846264338327
@@ -294,13 +286,7 @@ double GetCenterFrequency(unsigned int filterBand);
 
 
 
-/*
- * libmfcc.c - Code implementation for libMFCC
- * Copyright (c) 2010 Jeremy Sawruk
- *
- * This code is released under the MIT License. 
- * For conditions of distribution and use, see the license in LICENSE
- */
+
 
 #include <math.h>
 //#include "libmfcc.h"
@@ -481,13 +467,10 @@ void calculate_mfcc(double spectrum[], const char *fname)
         }
         fclose(fp);
 }
-/*
- * example.c - example of using libMFCC
- * Written 2010 - J. Sawruk
- */
+
 
 #include <stdio.h>
-#include <string.h> // For memset
+#include <string.h>
 
 //include "libmfcc.h"
 int main(int argc,char* argv[])
