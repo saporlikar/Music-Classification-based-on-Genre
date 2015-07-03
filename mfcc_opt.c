@@ -98,11 +98,6 @@ void wave_Read(const char* input_file)
                         }
                 }      
 
-                /*for (i = FRAMES_25ms; i--; )
-                {
-                        
-                }*/
-
                 while (!feof(fp))
                 {
                         nb = fread(buff16,sizeof(int),BUFSIZE,fp);
@@ -182,34 +177,7 @@ void dft(int *x[], unsigned int samples_per_frame)
                 sprintf(mfcc_coeff[i],"mfcc%d.txt",i+1);
 
                 calculate_mfcc(P[i], mfcc_coeff[i], (double **)mfcc_result, i, samples_per_frame);
-        }       
-
-        // Calculate DFT of x using brute force
-        /*for (i = FRAMES_25ms; i-- ; )
-        {
-                for (k = samples_per_frame ; k-- ; )
-                {
-                        // Real part of X[k]
-                        Xre[i][k] = 0;
-
-                        // Imaginary part of X[k]
-                        Xim[i][k] = 0;
-
-                        for (n = samples_per_frame ; n-- ; ) 
-                        {
-                                Xre[i][k] += (double)(x[i][n] * cos(n * k * PI * 2 / samples_per_frame));
-
-                                Xim[i][k] -= (double)(x[i][n] * sin(n * k * PI * 2 / samples_per_frame));
-                        }
-         
-                        // Power at kth frequency bin
-                        P[i][k] = Xre[i][k]*Xre[i][k] + Xim[i][k]*Xim[i][k];
-                }
-
-                sprintf(mfcc_coeff[i],"mfcc%d.txt",i+1);
-
-                calculate_mfcc(P[i], mfcc_coeff[i], (double **)mfcc_result, i, samples_per_frame);
-        }*/
+        }
 }
 
 /* 
